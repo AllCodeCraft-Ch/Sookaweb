@@ -1,0 +1,29 @@
+version: "1.1"
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.backend
+    ports:
+      - "5602:5602"
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./sookka-grain-guide-main
+      dockerfile: Dockerfile.frontend
+    ports:
+      - "5601:4173"
+    restart: unless-stopped
+  database:
+    build: 
+      context: .
+      dockerfile: Dockerfile.database
+    env_file:
+      - ./database.env
+    ports:
+      - "3307:3306"
+    restart: unless-stopped
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    
