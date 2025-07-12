@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 FROM golang:1.23 AS builder
+=======
+FROM golang:1.22 AS builder
+>>>>>>> 5f44436 (Initial commit)
 
 WORKDIR /app
 
@@ -14,8 +18,14 @@ FROM alpine:latest
 WORKDIR /app
 
 COPY --from=builder /app/server .
+<<<<<<< HEAD
 COPY .env .
 
 EXPOSE 5602
+=======
+COPY .env . 
+
+EXPOSE 8080
+>>>>>>> 5f44436 (Initial commit)
 
 CMD ["./server"]

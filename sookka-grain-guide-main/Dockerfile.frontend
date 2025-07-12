@@ -16,5 +16,4 @@ RUN bun install
 
 RUN bun run build
 
-# รัน vite preview เพื่อ serve production build
 CMD ["bun", "run", "preview"]
