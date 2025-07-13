@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"server/models"
 
 	"time"
 
@@ -59,5 +60,14 @@ func ConnectDatabase() {
 }
 
 func autoMigrateLoad() error {
-	return DB.AutoMigrate()
+	return DB.AutoMigrate(
+		&models.TypeFoot{},
+		&models.Nutrition{},
+		&models.Item{},
+		&models.Benefit{},
+		&models.Recipe{},
+		&models.StorageTip{},
+		&models.User{},
+	)
+
 }

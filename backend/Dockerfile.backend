@@ -1,9 +1,9 @@
-FROM golang:1.22 AS builder
+FROM golang:1.23 AS builder
 
 WORKDIR /app
 
 COPY go.mod go.sum ./
-RUN go mod download
+RUN go mod tidy
 
 COPY . .
 
@@ -14,8 +14,8 @@ FROM alpine:latest
 WORKDIR /app
 
 COPY --from=builder /app/server .
-COPY .env . 
+COPY .env .
 
-EXPOSE 8080
+EXPOSE 5602
 
 CMD ["./server"]
