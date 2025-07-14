@@ -6,7 +6,6 @@ services:
       dockerfile: Dockerfile.backend
     ports:
       - "5602:5602"
-    restart: unless-stopped
 
   frontend:
     build:
@@ -14,7 +13,6 @@ services:
       dockerfile: Dockerfile.frontend
     ports:
       - "5601:4173"
-    restart: unless-stopped
   database:
     build: 
       context: .
@@ -23,7 +21,6 @@ services:
       - ./database.env
     ports:
       - "3307:3306"
-    restart: unless-stopped
     volumes:
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql:ro
     
