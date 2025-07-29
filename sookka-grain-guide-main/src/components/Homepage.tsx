@@ -29,43 +29,53 @@ const Homepage = () => {
     }}>
       {/* Navigation */}
       <nav className="fixed top-0 left-0 right-0 bg-[#F6F5F3]/80 backdrop-blur-xl border-b border-[#8E9775]/10 z-50 py-4">
-        <div className="max-w-6xl mx-auto px-8 flex justify-between items-center">
-          <Link 
-            to="/" 
-            className="text-3xl font-extrabold bg-gradient-to-r from-[#8E9775] to-[#6B7353] bg-clip-text text-transparent tracking-tight"
-          >
-            Sookka
-          </Link>
-          
-          <div className="hidden md:flex items-center gap-8">
-            <Link to="/" className="text-[#8E9775] font-medium hover:text-[#6B7353] transition-colors relative">
-              หน้าแรก
-              <div className="absolute bottom-[-0.5rem] left-0 w-full h-0.5 bg-[#8E9775] rounded-full"></div>
-            </Link>
-            <a href="#categories" className="text-gray-500 font-medium hover:text-[#8E9775] transition-colors">
-              ประเภทอาหาร
-            </a>
-            <a href="#" className="text-gray-500 font-medium hover:text-[#8E9775] transition-colors">
-              สูตรอาหาร
-            </a>
-            <a href="#" className="text-gray-500 font-medium hover:text-[#8E9775] transition-colors">
-              เกี่ยวกับเรา
-            </a>
-          </div>
-          
-          <div className="relative">
-            <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-[#8E9775] w-4 h-4" />
-            <input
-              type="text"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              onKeyPress={handleSearch}
-              className="bg-white/80 border border-[#8E9775]/20 pl-12 pr-4 py-3 rounded-full text-sm w-72 focus:outline-none focus:border-[#8E9775] focus:ring-4 focus:ring-[#8E9775]/10 transition-all"
-              placeholder="ค้นหาอาหาร เช่น ควินัว, ข้าวโอ๊ต..."
-            />
-          </div>
-        </div>
-      </nav>
+  <div className="max-w-6xl mx-auto px-8 flex justify-between items-center">
+    <Link 
+      to="/" 
+      className="text-3xl font-extrabold bg-gradient-to-r from-[#8E9775] to-[#6B7353] bg-clip-text text-transparent tracking-tight"
+    >
+      Sookka
+    </Link>
+    
+    <div className="hidden md:flex items-center gap-8">
+      <Link to="/" className="text-[#8E9775] font-medium hover:text-[#6B7353] transition-colors relative">
+        หน้าแรก
+        <div className="absolute bottom-[-0.5rem] left-0 w-full h-0.5 bg-[#8E9775] rounded-full"></div>
+      </Link>
+      <a href="#categories" className="text-gray-500 font-medium hover:text-[#8E9775] transition-colors">
+        ประเภทอาหาร
+      </a>
+      <a href="#" className="text-gray-500 font-medium hover:text-[#8E9775] transition-colors">
+        สูตรอาหาร
+      </a>
+      <a href="#" className="text-gray-500 font-medium hover:text-[#8E9775] transition-colors">
+        เกี่ยวกับเรา
+      </a>
+    </div>
+
+    {/* ส่วนนี้เปลี่ยนเป็น flex เพื่อวาง search กับปุ่ม login */}
+    <div className="flex items-center gap-4">
+      <div className="relative">
+        <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-[#8E9775] w-4 h-4" />
+        <input
+          type="text"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          onKeyPress={handleSearch}
+          className="bg-white/80 border border-[#8E9775]/20 pl-12 pr-4 py-3 rounded-full text-sm w-72 focus:outline-none focus:border-[#8E9775] focus:ring-4 focus:ring-[#8E9775]/10 transition-all"
+          placeholder="ค้นหาอาหาร เช่น ควินัว, ข้าวโอ๊ต..."
+        />
+      </div>
+      <Link
+        to="/login"
+        className="text-[#8E9775] font-medium hover:text-[#6B7353] transition-colors px-4 py-2 border border-[#8E9775] rounded-full whitespace-nowrap"
+      >
+        เข้าสู่ระบบ
+      </Link>
+    </div>
+  </div>
+</nav>
+
 
       {/* Hero Section */}
       <section className="pt-32 pb-16 px-8 max-w-6xl mx-auto text-center">

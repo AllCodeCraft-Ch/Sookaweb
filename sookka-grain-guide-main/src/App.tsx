@@ -10,6 +10,9 @@ import NotFound from "./pages/NotFound";
 import Home from './pages/Home'
 import FoodList from './pages/FoodList'
 import Homepage from './components/Homepage'
+import LoginPage from './components/LoginPage';
+import Register from './components/ RegisterForm'
+import Additem from './components/additem'
 
 const queryClient = new QueryClient();
 
@@ -23,7 +26,11 @@ const App = () => (
           <Route path="/" element={<Index />} />
           <Route path="/quinoa" element={<QuinoaPage />} />
           <Route path="/" element={<Home />} />
+          <Route path="/Homepage" element={<Homepage />} />
+          <Route path="/login" element={<LoginPage />} />
           <Route path="/food-list" element={<FoodList />} />
+          <Route path="/RegisterForm" element={<Register />} />
+          <Route path="/additem" element={<Additem />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
