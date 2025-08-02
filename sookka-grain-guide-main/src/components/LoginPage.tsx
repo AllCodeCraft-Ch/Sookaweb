@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
 const styles = `
@@ -189,28 +189,58 @@ const styles = `
   }
 `;
 
+
+
 export default function LoginPage() {
   const navigate = useNavigate();
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  // ✅ redirect ถ้ามี token
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token && token !== "") {
+      navigate("/");
+    }
+  }, [navigate]);
+  
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // ถ้ามีการตรวจสอบข้อมูล สามารถใส่ได้ตรงนี้ก่อน navigate
-    navigate("/additem");
+
+    try {
+      const response = await fetch("http://localhost:5602/api/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          usernoun: username,
+          password: password,
+        }),
+      });
+
+      if (!response.ok) throw new Error("Login failed");
+
+      const data = await response.json();
+      localStorage.setItem("token", data.token);
+      // console.log(data)
+      navigate("/");
+    } catch (error) {
+      alert("Login failed: " + (error as Error).message);
+    }
   };
 
   return (
     <>
       <style>{styles}</style>
 
-      {/* Navigation */}
       <nav className="flex justify-between items-center max-w-6xl mx-auto px-8 py-2">
         <a href="/" className="logo font-bold text-xl">Sookka</a>
         <div className="text-[#8E9775] font-medium hover:text-[#6B7353] transition-colors px-6 py-2 border border-[#8E9775] rounded-full whitespace-nowrap">
-           <a href="/">Home</a>
+          <a href="/">Home</a>
         </div>
       </nav>
 
-      {/* Login Container */}
       <main className="login-container">
         <section className="login-card" aria-labelledby="loginTitle">
           <header className="login-header">
@@ -230,6 +260,8 @@ export default function LoginPage() {
                 placeholder="your@email.com"
                 required
                 autoComplete="email"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
               />
             </div>
 
@@ -242,6 +274,8 @@ export default function LoginPage() {
                 placeholder="••••••••"
                 required
                 autoComplete="current-password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
               />
             </div>
 
@@ -258,10 +292,10 @@ export default function LoginPage() {
         </section>
       </main>
 
-      {/* Footer */}
       <footer className="footer" role="contentinfo">
         <p>&copy; 2025 Sookka. Empowering healthy choices through knowledge.</p>
       </footer>
     </>
   );
 }
+

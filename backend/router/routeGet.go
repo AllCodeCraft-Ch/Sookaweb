@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"server/config"
 	"server/models"
+	"server/service"
 	"strconv"
 
 	"github.com/gofiber/fiber/v2"
@@ -60,5 +61,22 @@ func methotGet(routes fiber.Router) {
 
 		return c.JSON(item)
 	})
-
+	routes.Get("/getdatauser",config.JWTProtected(), func(c *fiber.Ctx) error {
+		//get form JWT
+		userIDFloat := c.Locals("user_id").(float64)
+		userID := uint(userIDFloat)
+		fmt.Println(userID)
+		//get form data base by {id}
+		dataUser, err := service.LoadUserByID(int(userID), config.DB)
+		if err != nil {
+			return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+				"message": "no user found in this JWT",
+			})
+		}
+		//send json data user
+		return c.Status(fiber.StatusOK).JSON(fiber.Map{
+			"username": dataUser.Username,
+			"email":    dataUser.Email,
+		})
+	})
 }

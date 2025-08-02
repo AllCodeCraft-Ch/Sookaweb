@@ -1,16 +1,34 @@
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Search } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { link } from 'fs';
+import { fetcher } from '../../function/fetchfunc';
+
+interface UserData {
+  username: string;
+  email: string;
+}
 
 const Homepage = () => {
+  const token = localStorage.getItem("token");
+  console.log(token)
   const [searchTerm, setSearchTerm] = useState('');
-
+  const [user, setUser] = useState<UserData | null>(null);
   const handleSearch = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
       console.log('Searching for:', searchTerm);
       // Add search functionality here
+    }
+  };
+  const Loaduser = async () => {
+    if (token != null) {
+      try {
+        const data = await fetcher<UserData>('http://localhost:5602/api/getdatauser', 'GET', undefined, token);
+        setUser(data);
+      } catch (err: any) {
+        console.log(err)
+      }
     }
   };
 
@@ -22,6 +40,9 @@ const Homepage = () => {
       (e.target as HTMLFormElement).reset();
     }
   };
+  useEffect(() => {
+    Loaduser();
+  }, [])
 
   return (
     <div className="min-h-screen" style={{
@@ -29,52 +50,60 @@ const Homepage = () => {
     }}>
       {/* Navigation */}
       <nav className="fixed top-0 left-0 right-0 bg-[#F6F5F3]/80 backdrop-blur-xl border-b border-[#8E9775]/10 z-50 py-4">
-  <div className="max-w-6xl mx-auto px-8 flex justify-between items-center">
-    <Link 
-      to="/" 
-      className="text-3xl font-extrabold bg-gradient-to-r from-[#8E9775] to-[#6B7353] bg-clip-text text-transparent tracking-tight"
-    >
-      Sookka
-    </Link>
-    
-    <div className="hidden md:flex items-center gap-8">
-      <Link to="/" className="text-[#8E9775] font-medium hover:text-[#6B7353] transition-colors relative">
-        หน้าแรก
-        <div className="absolute bottom-[-0.5rem] left-0 w-full h-0.5 bg-[#8E9775] rounded-full"></div>
-      </Link>
-      <a href="#categories" className="text-gray-500 font-medium hover:text-[#8E9775] transition-colors">
-        ประเภทอาหาร
-      </a>
-      <a href="#" className="text-gray-500 font-medium hover:text-[#8E9775] transition-colors">
-        สูตรอาหาร
-      </a>
-      <a href="#" className="text-gray-500 font-medium hover:text-[#8E9775] transition-colors">
-        เกี่ยวกับเรา
-      </a>
-    </div>
+        <div className="max-w-6xl mx-auto px-8 flex justify-between items-center">
+          <Link
+            to="/"
+            className="text-3xl font-extrabold bg-gradient-to-r from-[#8E9775] to-[#6B7353] bg-clip-text text-transparent tracking-tight"
+          >
+            Sookka
+          </Link>
 
-    {/* ส่วนนี้เปลี่ยนเป็น flex เพื่อวาง search กับปุ่ม login */}
-    <div className="flex items-center gap-4">
-      <div className="relative">
-        <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-[#8E9775] w-4 h-4" />
-        <input
-          type="text"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          onKeyPress={handleSearch}
-          className="bg-white/80 border border-[#8E9775]/20 pl-12 pr-4 py-3 rounded-full text-sm w-72 focus:outline-none focus:border-[#8E9775] focus:ring-4 focus:ring-[#8E9775]/10 transition-all"
-          placeholder="ค้นหาอาหาร เช่น ควินัว, ข้าวโอ๊ต..."
-        />
-      </div>
-      <Link
-        to="/login"
-        className="text-[#8E9775] font-medium hover:text-[#6B7353] transition-colors px-4 py-2 border border-[#8E9775] rounded-full whitespace-nowrap"
-      >
-        เข้าสู่ระบบ
-      </Link>
-    </div>
-  </div>
-</nav>
+          <div className="hidden md:flex items-center gap-8">
+            <Link to="/" className="text-[#8E9775] font-medium hover:text-[#6B7353] transition-colors relative">
+              หน้าแรก
+              <div className="absolute bottom-[-0.5rem] left-0 w-full h-0.5 bg-[#8E9775] rounded-full"></div>
+            </Link>
+            <a href="#categories" className="text-gray-500 font-medium hover:text-[#8E9775] transition-colors">
+              ประเภทอาหาร
+            </a>
+            <a href="#" className="text-gray-500 font-medium hover:text-[#8E9775] transition-colors">
+              สูตรอาหาร
+            </a>
+            <a href="#" className="text-gray-500 font-medium hover:text-[#8E9775] transition-colors">
+              เกี่ยวกับเรา
+            </a>
+          </div>
+
+          {/* ส่วนนี้เปลี่ยนเป็น flex เพื่อวาง search กับปุ่ม login */}
+          <div className="flex items-center gap-4">
+            <div className="relative">
+              <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-[#8E9775] w-4 h-4" />
+              <input
+                type="text"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                onKeyPress={handleSearch}
+                className="bg-white/80 border border-[#8E9775]/20 pl-12 pr-4 py-3 rounded-full text-sm w-72 focus:outline-none focus:border-[#8E9775] focus:ring-4 focus:ring-[#8E9775]/10 transition-all"
+                placeholder="ค้นหาอาหาร เช่น ควินัว, ข้าวโอ๊ต..."
+              />
+            </div>
+
+            {user ? (
+              <div className="text-[#8E9775] font-medium px-4 py-2 rounded-full whitespace-nowrap">
+                {user.username}
+              </div>
+            ) : (
+              <Link
+                to="/login"
+                className="text-[#8E9775] font-medium hover:text-[#6B7353] transition-colors px-4 py-2 border border-[#8E9775] rounded-full whitespace-nowrap"
+              >
+                เข้าสู่ระบบ
+              </Link>
+            )}
+
+          </div>
+        </div>
+      </nav>
 
 
       {/* Hero Section */}
@@ -85,8 +114,8 @@ const Homepage = () => {
         <p className="text-2xl text-gray-500 mb-12 font-normal">
           เรียนรู้คุณค่าทางโภชนาการ ประโยชน์ และสูตรอาหารเพื่อสุขภาพที่ดีที่สุด
         </p>
-        <a 
-          href="#categories" 
+        <a
+          href="#categories"
           className="inline-flex items-center gap-3 bg-gradient-to-r from-[#8E9775] to-[#B2B09B] text-white px-8 py-4 rounded-full font-semibold transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl hover:shadow-[#8E9775]/30"
         >
           <span>เริ่มต้นสำรวจ</span>
@@ -125,14 +154,14 @@ const Homepage = () => {
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
           {[
-            { icon: '🌾', title: 'ธัญพืช', description: 'ข้าว ควินัว ข้าวโอ๊ต และธัญพืชเพื่อสุขภาพ', count: '45 รายการ',link: '/FoodList' },
+            { icon: '🌾', title: 'ธัญพืช', description: 'ข้าว ควินัว ข้าวโอ๊ต และธัญพืชเพื่อสุขภาพ', count: '45 รายการ', link: '/FoodList' },
             { icon: '🥬', title: 'ผักใบเขียว', description: 'ผักใบเขียวที่อุดมไปด้วยวิตามินและแร่ธาตุ', count: '68 รายการ' },
             { icon: '🍎', title: 'ผลไม้', description: 'ผลไม้สดที่อุดมไปด้วยวิตามินซี', count: '89 รายการ' },
             { icon: '🥜', title: 'ถั่วและเมล็ด', description: 'แหล่งโปรตีนและไขมันดีจากธรรมชาติ', count: '34 รายการ' },
             { icon: '🐟', title: 'โปรตีน', description: 'เนื้อสัตว์ ปลา และโปรตีนเพื่อสุขภาพ', count: '52 รายการ' },
             { icon: '🥛', title: 'ผลิตภัณฑ์จากนม', description: 'นม ชีส โยเกิร์ต และผลิตภัณฑ์นม', count: '28 รายการ' }
           ].map((category, index) => (
-            <div 
+            <div
               key={index}
               className="bg-white/80 backdrop-blur-xl border border-[#8E9775]/10 rounded-3xl p-8 text-center hover:-translate-y-2 hover:shadow-2xl hover:shadow-[#8E9775]/20 transition-all duration-500 cursor-pointer relative overflow-hidden"
             >
@@ -163,7 +192,7 @@ const Homepage = () => {
               { emoji: '🥜', badge: 'โปรตีน', title: 'อัลมอนด์', subtitle: 'Prunus dulcis', calories: '579', protein: '21g', fiber: '12g' },
               { emoji: '🐟', badge: 'โอเมก้า-3', title: 'ปลาแซลมอน', subtitle: 'Salmo salar', calories: '208', protein: '20g', fiber: '12g' }
             ].map((food, index) => (
-              <div 
+              <div
                 key={index}
                 className="bg-white/90 backdrop-blur-xl border border-[#8E9775]/10 rounded-3xl overflow-hidden hover:-translate-y-2 hover:shadow-2xl hover:shadow-[#8E9775]/20 transition-all duration-500 cursor-pointer"
                 onClick={() => food.link && (window.location.href = food.link)}

@@ -13,6 +13,7 @@ import Homepage from './components/Homepage'
 import LoginPage from './components/LoginPage';
 import Register from './components/ RegisterForm'
 import Additem from './components/additem'
+import Logout from "./pages/Logout";
 
 const queryClient = new QueryClient();
 
@@ -32,6 +33,8 @@ const App = () => (
           <Route path="/RegisterForm" element={<Register />} />
           <Route path="/additem" element={<Additem />} />
           <Route path="*" element={<NotFound />} />
+          <Route path="/logout" element={<Logout />} />
+          
         </Routes>
       </BrowserRouter>
     </TooltipProvider>

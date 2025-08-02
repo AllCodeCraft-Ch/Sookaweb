@@ -1,7 +1,13 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function RegisterPage() {
+  const navigate = useNavigate();
+
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [strength, setStrength] = useState(0);
 
   const calculateStrength = (password: string) => {
@@ -27,9 +33,38 @@ export default function RegisterPage() {
     return "#10b981";
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    alert("Submit Register form");
+
+    if (password !== confirmPassword) {
+      alert("Passwords do not match");
+      return;
+    }
+
+    try {
+      const response = await fetch("http://localhost:5602/api/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          username,
+          email,
+          password,
+        }),
+      });
+
+      if (!response.ok) {
+        const err = await response.text();
+        throw new Error(err || "Registration failed");
+      }
+
+      const data = await response.json(); // สมมุติว่า { token: "..." }
+      localStorage.setItem("token", data.token);
+      navigate("/additem");
+    } catch (error) {
+      alert("Error: " + (error as Error).message);
+    }
   };
 
   return (
@@ -212,7 +247,7 @@ export default function RegisterPage() {
       <nav className="flex justify-between items-center max-w-6xl mx-auto px-8 py-2">
         <a href="/" className="logo font-bold text-xl">Sookka</a>
         <div className="text-[#8E9775] font-medium hover:text-[#6B7353] transition-colors px-6 py-2 border border-[#8E9775] rounded-full whitespace-nowrap">
-           <a href="/">Home</a>
+          <a href="/">Home</a>
         </div>
       </nav>
 
@@ -235,6 +270,8 @@ export default function RegisterPage() {
                 placeholder="Choose a username"
                 required
                 autoComplete="username"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
               />
             </div>
 
@@ -247,10 +284,12 @@ export default function RegisterPage() {
                 placeholder="your@email.com"
                 required
                 autoComplete="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
               />
             </div>
 
-            <div className="form-group" style={{ position: "relative" }}>
+            <div className="form-group">
               <label htmlFor="password" className="form-label">Password</label>
               <input
                 type="password"
@@ -258,9 +297,9 @@ export default function RegisterPage() {
                 className="form-input"
                 placeholder="••••••••"
                 required
+                autoComplete="new-password"
                 value={password}
                 onChange={onPasswordChange}
-                autoComplete="new-password"
               />
               <div className="password-strength">
                 <div
@@ -279,6 +318,8 @@ export default function RegisterPage() {
                 placeholder="••••••••"
                 required
                 autoComplete="new-password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
               />
             </div>
 

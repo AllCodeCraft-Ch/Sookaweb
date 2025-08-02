@@ -45,6 +45,7 @@ func login(db *gorm.DB, loginUser *models.User) (string, error) {
 
 	// Find user by email
 	firstUser := new(models.User)
+	fmt.Println(loginUser.Email)
 	result := db.Where("email = ? or username = ?", loginUser.Email, loginUser.Email).First(firstUser)
 	if result.Error != nil {
 		return "", result.Error

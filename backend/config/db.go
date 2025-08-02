@@ -33,7 +33,7 @@ func ConnectDatabase() {
 	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?parseTime=true",
 		user, pass, host, port, dbname,
 	)
-
+	fmt.Println(dsn)
 	newLogger := gormLogger.New(
 		log.New(os.Stdout, "\r\n", log.LstdFlags),
 		gormLogger.Config{
