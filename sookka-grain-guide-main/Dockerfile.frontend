@@ -1,14 +1,18 @@
-# Build stage
-FROM node:18-alpine AS build
-WORKDIR /app
-COPY package*.json ./
-RUN npm install
-COPY . .
-RUN npm run build
+FROM oven/bun:latest
 
-# Serve stage
-FROM node:18-alpine
 WORKDIR /app
-COPY --from=build /app/dist ./dist
-RUN npm install -g vite
-CMD ["vite", "preview", "--port", "4173", "--host"]
+
+COPY package.json bun.lockb ./
+COPY tsconfig.json tsconfig.app.json tsconfig.node.json ./
+COPY vite.config.ts ./
+COPY tailwind.config.ts ./
+COPY postcss.config.js ./
+COPY index.html ./
+COPY src ./src
+COPY public ./public
+COPY function ./function
+
+RUN bun install
+RUN bun run build
+
+CMD ["bun", "run", "preview", "--", "--host", "0.0.0.0", "--port", "4173"]

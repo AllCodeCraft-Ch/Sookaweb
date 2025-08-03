@@ -9,10 +9,13 @@ export default defineConfig(({ mode }) => ({
     host: "::",
     port: 8080,
   },
+  preview: {
+    port: 4173,
+    allowedHosts: ['sookka.local'], // ✅ สำคัญ!
+  },
   plugins: [
     react(),
-    mode === 'development' &&
-    componentTagger(),
+    mode === 'development' && componentTagger(),
   ].filter(Boolean),
   resolve: {
     alias: {
@@ -20,3 +23,4 @@ export default defineConfig(({ mode }) => ({
     },
   },
 }));
+
